@@ -1,6 +1,30 @@
 import { createTaskQueue } from '../Misc'
 
 const taskQueue = createTaskQueue()
+let subTask = null
+
+function getFirstTask() {}
+
+function executeTask(fiber) {}
+
+function workLoop(deadline) {
+  // 如果子任务不存在就去获取子任务
+  if (!subTask) {
+    subTask = getFirstTask()
+  }
+
+  // 如果任务存在并且浏览器有空余时间就调用
+  while (subTask && deadline.timeRemaining() > 1) {
+    subTask = executeTask(subTask)
+  }
+}
+
+function performTask(deadline) {
+  workLoop(deadline)
+  if (subTask || !taskQueue.isEmpty()) {
+    requestIdleCallback(performTask)
+  }
+}
 
 export const render = (element, dom) => {
   /**
@@ -14,19 +38,9 @@ export const render = (element, dom) => {
     dom,
     props: { children: element },
   })
-  console.log(
-    '%c taskQueue: ',
-    'font-size:12px;background-color: #6EC1C2;color:#fff;',
-    taskQueue
-  )
-  console.log(
-    '%c taskQueue.pop(): ',
-    'font-size:12px;background-color: #FFDD4D;color:#fff;',
-    taskQueue.pop()
-  )
 
   /**
    * 指定在浏览器空闲的时间去执行任务
    */
-  // requestIdleCallback(performTask)
+  requestIdleCallback(performTask)
 }
