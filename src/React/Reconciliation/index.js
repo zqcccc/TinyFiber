@@ -52,6 +52,16 @@ function reconcileChildren(fiber, children) {
 
 function executeTask(fiber) {
   reconcileChildren(fiber, fiber.props.children)
+  if (fiber.child) {
+    return fiber.child
+  }
+  let currentExecutedFiber = fiber
+  while (currentExecutedFiber.parent) {
+    if (currentExecutedFiber.sibling) {
+      return currentExecutedFiber.sibling
+    }
+    currentExecutedFiber = currentExecutedFiber.parent
+  }
   console.log(
     '%c fiber: ',
     'font-size:12px;background-color: #4b4b4b;color:#fff;',
