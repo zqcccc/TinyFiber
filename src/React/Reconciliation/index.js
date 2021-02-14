@@ -1,11 +1,61 @@
-import { createTaskQueue } from '../Misc'
+import { createTaskQueue, arrified } from '../Misc'
 
 const taskQueue = createTaskQueue()
 let subTask = null
 
-function getFirstTask() {}
+// 这里的 task 其实是一个 fiber 对象
+function getFirstTask() {
+  const task = taskQueue.pop()
+  return {
+    props: task.props,
+    stateNode: task.dom,
+    tag: 'host_root',
+    effects: [],
+    child: null,
+  }
+}
 
-function executeTask(fiber) {}
+function reconcileChildren(fiber, children) {
+  // children 有可能是对象也有可能是数组，需要将 children 转成数组
+  const arrifiedChildren = arrified(children)
+
+  let index = 0
+  let numberOfElements = arrifiedChildren.length
+  let element = null
+  let newFiber = null
+  let preFiber = null
+
+  while (index < numberOfElements) {
+    element = arrifiedChildren[index]
+    newFiber = {
+      type: element.type,
+      props: element.props,
+      tag: 'host_component',
+      effects: [],
+      effectTag: '',
+      stateNode: null,
+      parent: fiber,
+    }
+    if (index === 0) {
+      fiber.child = newFiber
+    } else {
+      preFiber.sibling = newFiber
+    }
+
+    preFiber = newFiber
+
+    index++
+  }
+}
+
+function executeTask(fiber) {
+  reconcileChildren(fiber, fiber.props.children)
+  console.log(
+    '%c fiber: ',
+    'font-size:12px;background-color: #4b4b4b;color:#fff;',
+    fiber
+  )
+}
 
 function workLoop(deadline) {
   // 如果子任务不存在就去获取子任务
