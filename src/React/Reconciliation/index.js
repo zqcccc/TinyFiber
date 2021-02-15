@@ -1,9 +1,21 @@
 import { createTaskQueue, arrified, createStateNode, getTag } from '../Misc'
 
+/**
+ * 任务队列
+ */
 const taskQueue = createTaskQueue()
+/**
+ * 子任务 fiber
+ */
 let subTask = null
+/**
+ * 等待提交的根 fiber
+ */
+let pendingCommit = null
 
-// 这里的 task 其实是一个 fiber 对象
+/**
+ * 这里的 task 其实是一个 fiber 对象
+ */
 function getFirstTask() {
   const task = taskQueue.pop()
   return {
@@ -13,6 +25,17 @@ function getFirstTask() {
     effects: [],
     child: null,
   }
+}
+
+/**
+ * 这里的 fiber 其实是根节点对象，直接拿 effects 数组就是所有的 fiber
+ */
+function commitAllWork(fiber) {
+  fiber.effects.forEach((item) => {
+    if (item.effectTag === 'placement') {
+      item.parent.stateNode.appendChild(item.stateNode)
+    }
+  })
 }
 
 function reconcileChildren(fiber, children) {
@@ -32,7 +55,7 @@ function reconcileChildren(fiber, children) {
       props: element.props,
       tag: getTag(element),
       effects: [],
-      effectTag: '',
+      effectTag: 'placement',
       parent: fiber,
     }
 
@@ -57,16 +80,20 @@ function executeTask(fiber) {
   }
   let currentExecutedFiber = fiber
   while (currentExecutedFiber.parent) {
+    /**
+     * 父级 effects 数组等于 父级 effects 合并当前 fiber 的 effects 再加当前 fiber，这样父级 effects 数组就有了所有的子级对象
+     * 这样在最外层的 fiber 对象的 effects 数组中就会有所有的子级 fiber
+     */
+    currentExecutedFiber.parent.effects = currentExecutedFiber.parent.effects.concat(
+      currentExecutedFiber.effects.concat(currentExecutedFiber)
+    )
     if (currentExecutedFiber.sibling) {
       return currentExecutedFiber.sibling
     }
+    // 这个循环如果能走到这步，说明没有同级没有兄弟元素了，需要不停的往上找父级了，最后会走到根节点
     currentExecutedFiber = currentExecutedFiber.parent
   }
-  console.log(
-    '%c fiber: ',
-    'font-size:12px;background-color: #4b4b4b;color:#fff;',
-    fiber
-  )
+  pendingCommit = currentExecutedFiber
 }
 
 function workLoop(deadline) {
@@ -78,6 +105,12 @@ function workLoop(deadline) {
   // 如果任务存在并且浏览器有空余时间就调用
   while (subTask && deadline.timeRemaining() > 1) {
     subTask = executeTask(subTask)
+  }
+
+  // 能走到这就是第二阶段了
+  if (pendingCommit) {
+    // 等待提交的 commit 就是根节点fiber
+    commitAllWork(pendingCommit)
   }
 }
 
