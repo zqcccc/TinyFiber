@@ -21,8 +21,14 @@ class Greeting extends Component {
     super(props)
   }
   render() {
-    return <div>hahahahha</div>
+    return <div>{this.props.title} hahahahha</div>
   }
 }
 
-render(<Greeting />, root)
+// render(<Greeting title='Hello' />, root)
+
+function FnComponent(props) {
+  return <div>{props.title} FnComponent</div>
+}
+
+render(<FnComponent title='Hello' />, root)

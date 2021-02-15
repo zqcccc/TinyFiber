@@ -35,7 +35,10 @@ function commitAllWork(fiber) {
     if (item.effectTag === 'placement') {
       let fiber = item
       let parentFiber = item.parent
-      while (parentFiber.tag === 'class_component') {
+      while (
+        parentFiber.tag === 'class_component' ||
+        parentFiber.tag === 'function_component'
+      ) {
         parentFiber = parentFiber.parent
       }
       if (fiber.tag === 'host_component') {
@@ -67,6 +70,11 @@ function reconcileChildren(fiber, children) {
     }
 
     newFiber.stateNode = createStateNode(newFiber)
+    console.log(
+      '%c newFiber: ',
+      'font-size:12px;background-color: #FCA650;color:#fff;',
+      newFiber
+    )
 
     if (index === 0) {
       fiber.child = newFiber
@@ -83,6 +91,8 @@ function reconcileChildren(fiber, children) {
 function executeTask(fiber) {
   if (fiber.tag === 'class_component') {
     reconcileChildren(fiber, fiber.stateNode.render())
+  } else if (fiber.tag === 'function_component') {
+    reconcileChildren(fiber, fiber.stateNode(fiber.props))
   } else {
     reconcileChildren(fiber, fiber.props.children)
   }
@@ -118,7 +128,7 @@ function workLoop(deadline) {
     subTask = executeTask(subTask)
   }
 
-  // 能走到这就是第二阶段了
+  // 能走到这就是第二阶段了，所有的 fiber 都整理好了
   if (pendingCommit) {
     // 等待提交的 commit 就是根节点fiber
     commitAllWork(pendingCommit)
