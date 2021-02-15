@@ -33,7 +33,14 @@ function getFirstTask() {
 function commitAllWork(fiber) {
   fiber.effects.forEach((item) => {
     if (item.effectTag === 'placement') {
-      item.parent.stateNode.appendChild(item.stateNode)
+      let fiber = item
+      let parentFiber = item.parent
+      while (parentFiber.tag === 'class_component') {
+        parentFiber = parentFiber.parent
+      }
+      if (fiber.tag === 'host_component') {
+        parentFiber.stateNode.appendChild(fiber.stateNode)
+      } // 类组件本身也是个节点，但是是不处理的，因为它不能追加节点，只能向类组件父级中不是类组件的那个节点去 appendChild 添加类组件里的内容
     }
   })
 }
@@ -74,7 +81,11 @@ function reconcileChildren(fiber, children) {
 }
 
 function executeTask(fiber) {
-  reconcileChildren(fiber, fiber.props.children)
+  if (fiber.tag === 'class_component') {
+    reconcileChildren(fiber, fiber.stateNode.render())
+  } else {
+    reconcileChildren(fiber, fiber.props.children)
+  }
   if (fiber.child) {
     return fiber.child
   }
