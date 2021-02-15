@@ -14,7 +14,18 @@ const jsx = (
 //   jsx
 // )
 
-// render(jsx, root)
+render(jsx, root)
+
+setTimeout(() => {
+  const jsx = (
+    <div>
+      <div>奥利给</div>
+      <p>Hi Fiber</p>
+      <div>奥利给</div>
+    </div>
+  )
+  render(jsx, root)
+}, 2000)
 
 class Greeting extends Component {
   constructor(props) {
@@ -31,4 +42,4 @@ function FnComponent(props) {
   return <div>{props.title} FnComponent</div>
 }
 
-render(<FnComponent title='Hello' />, root)
+// render(<FnComponent title='Hello' />, root)

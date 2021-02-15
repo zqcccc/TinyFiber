@@ -1,3 +1,4 @@
+import { updateNodeElement } from '../DOM'
 import { createTaskQueue, arrified, createStateNode, getTag } from '../Misc'
 
 /**
@@ -24,6 +25,7 @@ function getFirstTask() {
     tag: 'host_root',
     effects: [],
     child: null,
+    alternate: task.dom.__rootFiberContainer,
   }
 }
 
@@ -31,8 +33,29 @@ function getFirstTask() {
  * 这里的 fiber 其实是根节点对象，直接拿 effects 数组就是所有的 fiber
  */
 function commitAllWork(fiber) {
+  /**
+   * 循环 effects 数组 构建 DOM 节点树
+   */
   fiber.effects.forEach((item) => {
-    if (item.effectTag === 'placement') {
+    if (item.effectTag === 'update') {
+      /**
+       * 更新
+       */
+      if (item.type === item.alternate.type) {
+        /**
+         *  节点类型相同
+         */
+        updateNodeElement(item.stateNode, item, item.alternate)
+      } else {
+        /**
+         * 节点类型不同
+         */
+        item.parent.stateNode.replaceChild(
+          item.stateNode,
+          item.alternate.stateNode
+        )
+      }
+    } else if (item.effectTag === 'placement') {
       let fiber = item
       let parentFiber = item.parent
       while (
@@ -46,6 +69,11 @@ function commitAllWork(fiber) {
       } // 类组件本身也是个节点，但是是不处理的，因为它不能追加节点，只能向类组件父级中不是类组件的那个节点去 appendChild 添加类组件里的内容
     }
   })
+
+  /**
+   * 备份旧的 fiber 节点对象
+   */
+  fiber.stateNode.__rootFiberContainer = fiber
 }
 
 function reconcileChildren(fiber, children) {
@@ -57,29 +85,61 @@ function reconcileChildren(fiber, children) {
   let element = null
   let newFiber = null
   let preFiber = null
+  let alternate = null
+
+  if (fiber.alternate && fiber.alternate.child) {
+    alternate = fiber.alternate.child
+  }
 
   while (index < numberOfElements) {
     element = arrifiedChildren[index]
-    newFiber = {
-      type: element.type,
-      props: element.props,
-      tag: getTag(element),
-      effects: [],
-      effectTag: 'placement',
-      parent: fiber,
+    if (element && alternate) {
+      /**
+       * 更新
+       */
+      newFiber = {
+        type: element.type,
+        props: element.props,
+        tag: getTag(element),
+        effects: [],
+        effectTag: 'update',
+        parent: fiber,
+        alternate,
+      }
+      if (element.type === alternate.type) {
+        /**
+         * 类型相同
+         */
+        newFiber.stateNode = alternate.stateNode
+      } else {
+        /**
+         * 类型不同
+         */
+        newFiber.stateNode = createStateNode(newFiber)
+      }
+    } else if (element && !alternate) {
+      // 初始渲染
+      newFiber = {
+        type: element.type,
+        props: element.props,
+        tag: getTag(element),
+        effects: [],
+        effectTag: 'placement',
+        parent: fiber,
+      }
+      newFiber.stateNode = createStateNode(newFiber)
     }
-
-    newFiber.stateNode = createStateNode(newFiber)
-    console.log(
-      '%c newFiber: ',
-      'font-size:12px;background-color: #FCA650;color:#fff;',
-      newFiber
-    )
 
     if (index === 0) {
       fiber.child = newFiber
     } else {
       preFiber.sibling = newFiber
+    }
+
+    if (alternate && alternate.sibling) {
+      alternate = alternate.sibling
+    } else {
+      alternate = null
     }
 
     preFiber = newFiber
