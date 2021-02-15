@@ -1,6 +1,6 @@
 # TinyFiber
 
-[🇨🇳中文](README.cn.md) 
+[🇨🇳 中文](.github/readmes/README.cn.md)
 
 This repository was created for me to learn react fiber from the LAGOU Education (拉勾教育) course, it's a rough mockup of how fiber works, but it helps me understand the idle time and how fiber works very well
 
@@ -328,4 +328,3 @@ Fiber objects are ordinary JavaScript objects
 ### 4. Code
 
 You can see the various stages of code in the git tag
-
