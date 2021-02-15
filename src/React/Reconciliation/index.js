@@ -37,7 +37,9 @@ function commitAllWork(fiber) {
    * 循环 effects 数组 构建 DOM 节点树
    */
   fiber.effects.forEach((item) => {
-    if (item.effectTag === 'update') {
+    if (item.effectTag === 'delete') {
+      item.parent.stateNode.removeChild(item.stateNode)
+    } else if (item.effectTag === 'update') {
       /**
        * 更新
        */
@@ -91,9 +93,12 @@ function reconcileChildren(fiber, children) {
     alternate = fiber.alternate.child
   }
 
-  while (index < numberOfElements) {
+  while (index < numberOfElements || alternate) {
     element = arrifiedChildren[index]
-    if (element && alternate) {
+    if (!element && alternate) {
+      alternate.effectTag = 'delete'
+      fiber.effects.push(alternate)
+    } else if (element && alternate) {
       /**
        * 更新
        */
@@ -132,7 +137,7 @@ function reconcileChildren(fiber, children) {
 
     if (index === 0) {
       fiber.child = newFiber
-    } else {
+    } else if (element) {
       preFiber.sibling = newFiber
     }
 

@@ -6,6 +6,7 @@ const jsx = (
   <div>
     <p>Hello React</p>
     <p>Hi Fiber</p>
+    <div>奥利给</div>
   </div>
 )
 // console.log(
@@ -21,7 +22,6 @@ setTimeout(() => {
     <div>
       <div>奥利给</div>
       <p>Hi Fiber</p>
-      <div>奥利给</div>
     </div>
   )
   render(jsx, root)
