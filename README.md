@@ -1,6 +1,10 @@
 # TinyFiber
 
-This repository was created for me to learn react fiber, it's a rough mockup of how fiber works, but it helps me understand the idle time and how fiber works very well
+[🇨🇳中文](README.cn.md) 
+
+This repository was created for me to learn react fiber from the LAGOU Education (拉勾教育) course, it's a rough mockup of how fiber works, but it helps me understand the idle time and how fiber works very well
+
+It is highly recommended that you check out the [TinyReact repository](https://github.com/zqcccc/TinyReact) first
 
 just clone this repository and
 
@@ -36,18 +40,18 @@ Dependencies at development：`npm install webpack webpack-cli webpack-node-exte
 
 Project dependencies：`npm install express`
 
-| 依赖项                 | 描述                                                         |
-| ---------------------- | ------------------------------------------------------------ |
-| webpack                | Module Packaging Tool                                        |
-| webpack-cli            | Package command tool                                         |
+| 依赖项                 | 描述                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| webpack                | Module Packaging Tool                                                           |
+| webpack-cli            | Package command tool                                                            |
 | webpack-node-externals | Exclude modules from the node_modules folder when packaging server-side modules |
-| @babel/core            | JavaScript code conversion tools                             |
-| @babel/preset-env      | babel Presets, Converting Advanced JavaScript Syntax         |
-| @babel/preset-react    | babel Presets, Converting JSX syntax                         |
-| babel-loader           | The babel tool loader in webpack                             |
-| nodemon                | Monitor server-side file changes and restart the application |
-| npm-run-all            | Command line tool that can execute multiple commands at the same time |
-| express                | node platform-based web development framework                |
+| @babel/core            | JavaScript code conversion tools                                                |
+| @babel/preset-env      | babel Presets, Converting Advanced JavaScript Syntax                            |
+| @babel/preset-react    | babel Presets, Converting JSX syntax                                            |
+| babel-loader           | The babel tool loader in webpack                                                |
+| nodemon                | Monitor server-side file changes and restart the application                    |
+| npm-run-all            | Command line tool that can execute multiple commands at the same time           |
+| express                | node platform-based web development framework                                   |
 
 #### 1.3 Environment Configuration
 
@@ -201,9 +205,9 @@ There are two buttons and a DIV on the page. Clicking on the first button perfor
     <button id="btn1">Performing computing tasks</button>
     <button id="btn2">Change background color</button>
     <script>
-      var box = document.getElementById("box")
-      var btn1 = document.getElementById("btn1")
-      var btn2 = document.getElementById("btn2")
+      var box = document.getElementById('box')
+      var btn1 = document.getElementById('btn1')
+      var btn2 = document.getElementById('btn2')
       var number = 99999
       var value = 0
 
@@ -222,7 +226,7 @@ There are two buttons and a DIV on the page. Clicking on the first button perfor
       }
 
       btn2.onclick = function () {
-        box.style.background = "green"
+        box.style.background = 'green'
       }
     </script>
   </body>
@@ -271,7 +275,7 @@ interactionBtn.addEventListener('click', function () {
 })
 ```
 
-### 3 Fiber
+### 3. Fiber
 
 #### 3.1 Issues
 
@@ -320,4 +324,8 @@ Fiber objects are ordinary JavaScript objects
 ```
 
 <img src="./images/3.png"/>
+
+### 4. Code
+
+You can see the various stages of code in the git tag
 
