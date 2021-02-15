@@ -291,7 +291,7 @@ The core problem: recursion cannot be interrupted, and it takes a long time to e
 
 The core is the first point, the second and third points are to achieve the first point
 
-#### 3.3 实现思路
+#### 3.3 Realization of ideas
 
 In the Fiber scenario, the DOM diff algorithm is divided into two parts in order to enable the termination and continuation of tasks.
 
