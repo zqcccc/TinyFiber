@@ -21,7 +21,7 @@ The next sections are the steps to build this project
 
 #### 1.1 File structure
 
-| 文件 / 文件夹            | 描述                            |
+| File / Folder            | Description                     |
 | ------------------------ | ------------------------------- |
 | src                      | Client source files             |
 | dist                     | Client-side bundle code         |
@@ -40,18 +40,18 @@ Dependencies at development：`npm install webpack webpack-cli webpack-node-exte
 
 Project dependencies：`npm install express`
 
-| 依赖项                 | 描述                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| webpack                | Module Packaging Tool                                                           |
-| webpack-cli            | Package command tool                                                            |
+| Dependencies           | Description                                                  |
+| ---------------------- | ------------------------------------------------------------ |
+| webpack                | Module Packaging Tool                                        |
+| webpack-cli            | Package command tool                                         |
 | webpack-node-externals | Exclude modules from the node_modules folder when packaging server-side modules |
-| @babel/core            | JavaScript code conversion tools                                                |
-| @babel/preset-env      | babel Presets, Converting Advanced JavaScript Syntax                            |
-| @babel/preset-react    | babel Presets, Converting JSX syntax                                            |
-| babel-loader           | The babel tool loader in webpack                                                |
-| nodemon                | Monitor server-side file changes and restart the application                    |
-| npm-run-all            | Command line tool that can execute multiple commands at the same time           |
-| express                | node platform-based web development framework                                   |
+| @babel/core            | JavaScript code conversion tools                             |
+| @babel/preset-env      | babel Presets, Converting Advanced JavaScript Syntax         |
+| @babel/preset-react    | babel Presets, Converting JSX syntax                         |
+| babel-loader           | The babel tool loader in webpack                             |
+| nodemon                | Monitor server-side file changes and restart the application |
+| npm-run-all            | Command line tool that can execute multiple commands at the same time |
+| express                | node platform-based web development framework                |
 
 #### 1.3 Environment Configuration
 
